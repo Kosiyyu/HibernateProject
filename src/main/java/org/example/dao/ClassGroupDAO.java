@@ -2,17 +2,13 @@ package org.example.dao;
 
 import org.example.model.ClassGroup;
 import org.example.model.Student;
-import org.example.model.Teacher;
-import org.hibernate.Criteria;
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.query.NativeQuery;
 
-import javax.persistence.Query;
+import javax.persistence.EntityManager;
 import java.util.List;
 
-public class ClassGroupDAO implements DAO<ClassGroup>{
+public class ClassGroupDAO implements DAO<ClassGroup> {
 
     private final SessionFactory sessionFactory;
 
@@ -82,28 +78,48 @@ public class ClassGroupDAO implements DAO<ClassGroup>{
         session.close();
     }
 
-    public List<Student> search(String text) {
-        Session session = sessionFactory.openSession();
-        String sql = "select distinct s.address, s.birthdaydate, s.email, s.firstname, s.lastname, s.telephonenumber from student s\n" +
-                "        inner join classgroup_student cg_s on cg_s.students_id = s.id\n" +
-                "        and s.firstname like '%" + text + "%' or s.lastname like '%" + text + "%'";
-        SQLQuery query = session.createSQLQuery(sql);
-        query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-        List<Student> studentList = query.getResultList();
-        session.close();
-        return studentList;
+    public List<Student> searchInSpecificClassGroup(long id, String text) {
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        List<Student> resultList = entityManager.createNativeQuery(
+                        "select * from (select * from student inner join classgroup_student on classgroup_student.students_id = student.id)as s\n" +
+                                "where s.classgroup_id = " + id + " and (s.firstname like '%" + text + "%' or s.lastname like '%" + text + "%')"
+                        , Student.class)
+                .getResultList();
+        entityManager.close();
+        return resultList;
     }
 
     public List<Student> getStudentsFromClassGroupById(long id) {
-        Session session = sessionFactory.openSession();
-        String sql = "select student.id, student.address, student.birthdaydate, student.email, student.firstname, student.lastname, student.telephonenumber from student\n" +
-                "inner join classgroup_student ON classgroup_student.students_id = student.id\n" +
-                "where classgroup_id = " + id + "\n" +
-                "order by id";
-        SQLQuery query = session.createSQLQuery(sql);
-        query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-        List<Student> studentList = query.list();
-        session.close();
-        return studentList;
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        List<Student> resultList = entityManager.createNativeQuery(
+                        "select * from student inner join classgroup_student on classgroup_student.students_id = student.id\n" +
+                                "where classgroup_id = " + id + "\n" +
+                                "order by id"
+                        , Student.class)
+                .getResultList();
+        entityManager.close();
+        return resultList;
+    }
+
+    public List<Student> getStudentsFromClassGroupByFirstname(long id) {
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        List<Student> resultList = entityManager.createNativeQuery(
+                        "select * from student inner join classgroup_student on classgroup_student.students_id = student.id\n" +
+                                "where classgroup_id = " + id + "\n" +
+                                "order by firstname"
+                        , Student.class)
+                .getResultList();
+        return resultList;
+    }
+
+    public List<Student> getStudentsFromClassGroupByLastname(long id) {
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        List<Student> resultList = entityManager.createNativeQuery(
+                        "select * from student inner join classgroup_student on classgroup_student.students_id = student.id\n" +
+                                "where classgroup_id = " + id + "\n" +
+                                "order by lastname"
+                        , Student.class)
+                .getResultList();
+        return resultList;
     }
 }

@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.example.model.Student;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.List;
@@ -23,7 +24,7 @@ public class ClassGroup {
     @Size(min = 1)
     private Long size;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "classgroup_student",
             joinColumns = @JoinColumn(
                     name = "classgroup_id",

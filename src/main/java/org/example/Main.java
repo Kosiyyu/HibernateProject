@@ -101,9 +101,16 @@ public class Main {
         ClassGroup classGroup2 = new ClassGroup(teacher2, 5l, studentList2);
         classGroupDAO.save(classGroup2);
 
-        //classGroupDAO.delete(classGroupDAO.get(1l));
-        System.out.println(classGroupDAO.search("B"));
-        System.out.println(classGroupDAO.getStudentsFromClassGroupById(1l));
+        classGroupDAO.searchInSpecificClassGroup(1l, "B").forEach(System.out::println);
+        System.out.println("----------------------------------------");
+        classGroupDAO.getStudentsFromClassGroupByLastname(1l).forEach(System.out::println);
+        System.out.println("----------------------------------------");
+        classGroupDAO.getStudentsFromClassGroupByFirstname(1l).forEach(System.out::println);
+        System.out.println("----------------------------------------");
+        classGroupDAO.getStudentsFromClassGroupById(1l).forEach(System.out::println);
+        System.out.println("----------------------------------------");
+
+
 
 
 
