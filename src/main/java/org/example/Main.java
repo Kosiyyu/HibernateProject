@@ -11,11 +11,10 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import java.lang.reflect.Field;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class Main {
@@ -41,6 +40,16 @@ public class Main {
         catch (Exception e){
             System.out.println(e);
             throw new ExceptionInInitializerError();
+        }
+    }
+
+    public static void cast(Object o) throws IllegalArgumentException, IllegalAccessException{
+        Class<? extends Object> clazz = o.getClass();
+        //clazz.cast(o);
+        //System.out.println(clazz.getName() + " >> " + clazz.getDeclaredFields().length);
+        for(Field f: clazz.getDeclaredFields()){
+            f.setAccessible(true);
+            //System.out.println( f.getName()  + "=" + f.get(o));
         }
     }
 
@@ -93,7 +102,12 @@ public class Main {
         classGroupDAO.save(classGroup2);
 
         //classGroupDAO.delete(classGroupDAO.get(1l));
-        classGroupDAO.search("asdas");
+        System.out.println(classGroupDAO.search("B"));
+        System.out.println(classGroupDAO.getStudentsFromClassGroupById(1l));
+
+
+
+
 
 
 

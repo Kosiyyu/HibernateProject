@@ -24,7 +24,16 @@ public class ClassGroup {
     private Long size;
 
     @OneToMany
-    @JoinTable(name = "classgroup_student")
+    @JoinTable(name = "classgroup_student",
+            joinColumns = @JoinColumn(
+                    name = "classgroup_id",
+                    referencedColumnName = "id"
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "students_id",
+                    referencedColumnName = "id"
+            )
+    )
     private List<Student> students;
 
     public ClassGroup() {

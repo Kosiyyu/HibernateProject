@@ -3,9 +3,11 @@ package org.example.dao;
 import org.example.model.ClassGroup;
 import org.example.model.Student;
 import org.example.model.Teacher;
+import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.NativeQuery;
 
 import javax.persistence.Query;
 import java.util.List;
@@ -81,25 +83,27 @@ public class ClassGroupDAO implements DAO<ClassGroup>{
     }
 
     public List<Student> search(String text) {
-
-
-/*       select distinct s.address, s.birthdaydate, s.email, s.firstname, s.lastname, s.telephonenumber from student s
-        inner join classgroup_student cg_s on cg_s.students_id = s.id
-        and s.firstname like '%J%' or s.lastname like '%J%'*/
-
-
         Session session = sessionFactory.openSession();
+        String sql = "select distinct s.address, s.birthdaydate, s.email, s.firstname, s.lastname, s.telephonenumber from student s\n" +
+                "        inner join classgroup_student cg_s on cg_s.students_id = s.id\n" +
+                "        and s.firstname like '%" + text + "%' or s.lastname like '%" + text + "%'";
+        SQLQuery query = session.createSQLQuery(sql);
+        query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+        List<Student> studentList = query.getResultList();
+        session.close();
+        return studentList;
+    }
 
-/*
-        List<Student> studentList = session.createQuery(
-                "FROM Student s WHERE s.firstname LIKE '%J%' OR s.lastname LIKE '%J%'", Student.class).getResultList();
-*/
-
-
-        List<Student> studentList = session.createQuery(
-                "FROM ClassGroup.students cg WHERE cg.firstname = 'John' AND ClassGroup.id = 1", Student.class).getResultList();
-//FROM ClassGroup.students cg WHERE ClassGroup.id = 1 SELECT "
-
+    public List<Student> getStudentsFromClassGroupById(long id) {
+        Session session = sessionFactory.openSession();
+        String sql = "select student.id, student.address, student.birthdaydate, student.email, student.firstname, student.lastname, student.telephonenumber from student\n" +
+                "inner join classgroup_student ON classgroup_student.students_id = student.id\n" +
+                "where classgroup_id = " + id + "\n" +
+                "order by id";
+        SQLQuery query = session.createSQLQuery(sql);
+        query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+        List<Student> studentList = query.list();
+        session.close();
         return studentList;
     }
 }
