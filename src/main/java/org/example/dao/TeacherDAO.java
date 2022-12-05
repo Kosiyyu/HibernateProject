@@ -1,14 +1,11 @@
 package org.example.dao;
 
-import org.example.model.Student;
 import org.example.model.Teacher;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import javax.persistence.EntityManager;
-import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TeacherDAO implements DAO<Teacher>{
@@ -19,60 +16,80 @@ public class TeacherDAO implements DAO<Teacher>{
 
     @Override
     public Teacher get(long id) {
-        EntityManager entityManager = sessionFactory.createEntityManager();
-        Teacher result = (Teacher) entityManager.createNativeQuery(
-                        "select * from teacher where teacher.id = " + id
-                        , Teacher.class)
-                .getResultList().get(0);
-        entityManager.close();
-        return result;
+        try {
+            EntityManager entityManager = sessionFactory.createEntityManager();
+            Teacher result = (Teacher) entityManager.createNativeQuery(
+                            "select * from teacher where teacher.id = " + id
+                            , Teacher.class)
+                    .getResultList().get(0);
+            entityManager.close();
+            return result;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 
     @Override
     public List<Teacher> getAll() {
-        EntityManager entityManager = sessionFactory.createEntityManager();
-        List<Teacher> resultList = entityManager.createNativeQuery(
-                        "select * from teacher"
-                        , Teacher.class)
-                .getResultList();
-        entityManager.close();
-        return resultList;
+        try {
+            EntityManager entityManager = sessionFactory.createEntityManager();
+            List<Teacher> resultList = entityManager.createNativeQuery(
+                            "select * from teacher"
+                            , Teacher.class)
+                    .getResultList();
+            entityManager.close();
+            return resultList;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return new ArrayList<Teacher>();
     }
 
     @Override
     public void save(Teacher teacher) {
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.save(teacher);
-        session.getTransaction().commit();
+        try {
+            session.beginTransaction();
+            session.save(teacher);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         session.close();
     }
 
     @Override
-    public void update(Teacher teacher , String[] params) {
-        if(params[0] != null){
-            teacher.setFirstname(params[0]);
+    public void update(Teacher teacher, Teacher teacherUpdate) {
+        if (teacherUpdate.getFirstname() != null) {
+            teacher.setFirstname(teacherUpdate.getFirstname());
         }
-        if(params[1] != null){
-            teacher.setFirstname(params[1]);
+        if (teacherUpdate.getLastname() != null) {
+            teacher.setLastname(teacherUpdate.getLastname());
         }
-        if(params[2] != null){
-            teacher.setBirthdayDate(new Timestamp(new Date(2000, Calendar.JANUARY, 25).getTime()));
+        if (teacherUpdate.getBirthdayDate() != null) {
+            teacher.setBirthdayDate(teacherUpdate.getBirthdayDate());
         }
-        if(params[3] != null){
-            teacher.setFirstname(params[3]);
+        if (teacherUpdate.getEmail() != null) {
+            teacher.setEmail(teacherUpdate.getEmail());
         }
-        if(params[4] != null){
-            teacher.setFirstname(params[4]);
+        if (teacherUpdate.getEmail() != null) {
+            teacher.setEmail(teacherUpdate.getEmail());
         }
-        if(params[5] != null){
-            teacher.setFirstname(params[5]);
+        if (teacherUpdate.getTelephoneNumber() != null) {
+            teacher.setTelephoneNumber(teacherUpdate.getTelephoneNumber());
         }
 
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.update(teacher);
-        session.getTransaction().commit();
+
+        try {
+            session.beginTransaction();
+            session.update(teacher);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
         session.close();
     }
 
@@ -80,19 +97,27 @@ public class TeacherDAO implements DAO<Teacher>{
     @Override
     public void delete(Teacher teacher) {
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.remove(teacher);
-        session.getTransaction().commit();
+        try {
+            session.beginTransaction();
+            session.remove(teacher);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         session.close();
     }
 
     @Override
     public void delete(long id) {
         Session session = sessionFactory.openSession();
-        Teacher teacher = session.load(Teacher.class, id);
-        session.beginTransaction();
-        session.delete(teacher);
-        session.getTransaction().commit();
+        try {
+            Teacher teacher = session.load(Teacher.class, id);
+            session.beginTransaction();
+            session.delete(teacher);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         session.close();
     }
 }

@@ -1,6 +1,5 @@
 package org.example.model;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -13,8 +12,7 @@ public class Grade {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "grade_seq")
     private Long id;
 
-    @NotNull
-    private double value;
+    private Double value;
 
     @OneToOne(fetch = FetchType.EAGER)
     private Student student;
@@ -30,20 +28,27 @@ public class Grade {
     public Grade() {
     }
 
-    public Grade(double value, Student student, Teacher teacher, Subject subject, String description) {
+    public Grade(Double value, Student student, Teacher teacher, Subject subject, String description) {
         this.value = value;
         this.student = student;
         this.teacher = teacher;
         this.subject = subject;
         this.description = description;
+
+        if (value > 5.0 || value < 2.0) {
+            throw new ExceptionInInitializerError("Bad value");
+        }
     }
 
-    public Grade(Long id, double value, Student student, Teacher teacher, Subject subject, String description) {
+    public Grade(Long id, Double value, Student student, Teacher teacher, Subject subject, String description) {
         this.id = id;
         this.value = value;
         this.student = student;
         this.teacher = teacher;
         this.subject = subject;
         this.description = description;
+        if (value > 5.0 || value < 2.0) {
+            throw new ExceptionInInitializerError("Bad value");
+        }
     }
 }

@@ -1,15 +1,12 @@
 package org.example.dao;
 
 import lombok.Data;
-import org.example.model.ClassGroup;
 import org.example.model.Student;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import javax.persistence.EntityManager;
-import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -22,60 +19,59 @@ public class StudentDAO implements DAO<Student> {
 
     @Override
     public Student get(long id) {
-        EntityManager entityManager = sessionFactory.createEntityManager();
-        Student result = (Student) entityManager.createNativeQuery(
-                        "select * from student where student.id = " + id
-                        , Student.class)
-                .getResultList().get(0);
-        entityManager.close();
-        return result;
+        try {
+            EntityManager entityManager = sessionFactory.createEntityManager();
+            Student result = (Student) entityManager.createNativeQuery(
+                            "select * from student where student.id = " + id
+                            , Student.class)
+                    .getResultList().get(0);
+            entityManager.close();
+            return result;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 
     @Override
     public List<Student> getAll() {
-        EntityManager entityManager = sessionFactory.createEntityManager();
-        List<Student> resultList = entityManager.createNativeQuery(
-                        "select * from student"
-                        , Student.class)
-                .getResultList();
-        entityManager.close();
-        return resultList;
+        try {
+            EntityManager entityManager = sessionFactory.createEntityManager();
+            List<Student> resultList = entityManager.createNativeQuery(
+                            "select * from student"
+                            , Student.class)
+                    .getResultList();
+            entityManager.close();
+            return resultList;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return new ArrayList<Student>();
     }
 
     @Override
     public void save(Student student) {
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.save(student);
-        session.getTransaction().commit();
+        try {
+            session.beginTransaction();
+            session.save(student);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         session.close();
     }
 
     @Override
-    public void update(Student student, String[] params) {
-        if(params[0] != null){
-            student.setFirstname(params[0]);
-        }
-        if(params[1] != null){
-            student.setFirstname(params[1]);
-        }
-        if(params[2] != null){
-            student.setBirthdayDate(new Timestamp(new Date(2000, Calendar.JANUARY, 25).getTime()));
-        }
-        if(params[3] != null){
-            student.setFirstname(params[3]);
-        }
-        if(params[4] != null){
-            student.setFirstname(params[4]);
-        }
-        if(params[5] != null){
-            student.setFirstname(params[5]);
-        }
-
+    public void update(Student student, Student studentUpdate) {
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.update(student);
-        session.getTransaction().commit();
+        try {
+            session.beginTransaction();
+            session.update(student);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            e.getMessage();
+        }
         session.close();
     }
 
@@ -83,19 +79,28 @@ public class StudentDAO implements DAO<Student> {
     @Override
     public void delete(Student student) {
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.delete(student);
-        session.getTransaction().commit();
+        try {
+            session.beginTransaction();
+            session.delete(student);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
         session.close();
     }
 
     @Override
     public void delete(long id) {
         Session session = sessionFactory.openSession();
-        Student student = session.load(Student.class, id);
-        session.beginTransaction();
-        session.delete(student);
-        session.getTransaction().commit();
+        try {
+            Student student = session.load(Student.class, id);
+            session.beginTransaction();
+            session.delete(student);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         session.close();
     }
 }
