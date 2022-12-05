@@ -2,11 +2,20 @@ package org.example.dao;
 
 import org.example.model.ClassGroup;
 import org.example.model.Student;
+import org.hibernate.Hibernate;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.postgresql.core.NativeQuery;
 
+import javax.management.Query;
 import javax.persistence.EntityManager;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ClassGroupDAO implements DAO<ClassGroup> {
 
@@ -18,16 +27,24 @@ public class ClassGroupDAO implements DAO<ClassGroup> {
 
     @Override
     public ClassGroup get(long id) {
-        Session session = sessionFactory.openSession();
-        ClassGroup classGroup = session.load(ClassGroup.class, id);
-        session.close();
-        return classGroup;
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        ClassGroup result = (ClassGroup) entityManager.createNativeQuery(
+                        "select * from classgroup where classgroup.id = " + id
+                        , ClassGroup.class)
+                .getResultList().get(0);
+        entityManager.close();
+        return result;
     }
 
     @Override
     public List<ClassGroup> getAll() {
-        Session session = sessionFactory.openSession();
-        return session.createQuery("SELECT c FROM ClassGroup c", ClassGroup.class).getResultList();
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        List<ClassGroup> resultList = entityManager.createNativeQuery(
+                        "select * from classgroup"
+                        , ClassGroup.class)
+                .getResultList();
+        entityManager.close();
+        return resultList;
     }
 
     @Override
@@ -118,6 +135,15 @@ public class ClassGroupDAO implements DAO<ClassGroup> {
                         "select * from student inner join classgroup_student on classgroup_student.students_id = student.id\n" +
                                 "where classgroup_id = " + id + "\n" +
                                 "order by lastname"
+                        , Student.class)
+                .getResultList();
+        return resultList;
+    }
+
+    public List<Student> findEmptyClassGroup() {
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        List<Student> resultList = entityManager.createNativeQuery(
+                        "select * from student inner join classgroup_student on classgroup_student.students_id = student.id\n"
                         , Student.class)
                 .getResultList();
         return resultList;

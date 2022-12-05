@@ -5,6 +5,7 @@ import org.example.model.Teacher;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
+import javax.persistence.EntityManager;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,16 +19,24 @@ public class TeacherDAO implements DAO<Teacher>{
 
     @Override
     public Teacher get(long id) {
-        Session session = sessionFactory.openSession();
-        Teacher teacher = session.get(Teacher.class, id);
-        session.close();
-        return teacher;
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        Teacher result = (Teacher) entityManager.createNativeQuery(
+                        "select * from teacher where teacher.id = " + id
+                        , Teacher.class)
+                .getResultList().get(0);
+        entityManager.close();
+        return result;
     }
 
     @Override
     public List<Teacher> getAll() {
-        Session session = sessionFactory.openSession();
-        return session.createQuery("SELECT s FROM Teacher s", Teacher.class).getResultList();
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        List<Teacher> resultList = entityManager.createNativeQuery(
+                        "select * from teacher"
+                        , Teacher.class)
+                .getResultList();
+        entityManager.close();
+        return resultList;
     }
 
     @Override

@@ -1,9 +1,12 @@
 package org.example.dao;
 
 import lombok.Data;
+import org.example.model.ClassGroup;
 import org.example.model.Student;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+
+import javax.persistence.EntityManager;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
@@ -19,16 +22,24 @@ public class StudentDAO implements DAO<Student> {
 
     @Override
     public Student get(long id) {
-        Session session = sessionFactory.openSession();
-        Student student = session.get(Student.class, id);
-        session.close();
-        return student;
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        Student result = (Student) entityManager.createNativeQuery(
+                        "select * from student where student.id = " + id
+                        , Student.class)
+                .getResultList().get(0);
+        entityManager.close();
+        return result;
     }
 
     @Override
     public List<Student> getAll() {
-        Session session = sessionFactory.openSession();
-        return session.createQuery("SELECT s FROM Student s", Student.class).getResultList();
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        List<Student> resultList = entityManager.createNativeQuery(
+                        "select * from student"
+                        , Student.class)
+                .getResultList();
+        entityManager.close();
+        return resultList;
     }
 
     @Override

@@ -24,7 +24,7 @@ public class ClassGroup {
     @Size(min = 1)
     private Long size;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "classgroup_student",
             joinColumns = @JoinColumn(
                     name = "classgroup_id",

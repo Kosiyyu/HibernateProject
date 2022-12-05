@@ -43,6 +43,18 @@ public class Main {
         }
     }
 
+    public static void export() {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.createNativeQuery("COPY classgroup TO 'C:\\Users\\kosiyyu\\Desktop\\classgroup.csv' DELIMITER ',' CSV HEADER").executeUpdate();
+        session.createNativeQuery("COPY student TO 'C:\\Users\\kosiyyu\\Desktop\\student.csv' DELIMITER ',' CSV HEADER").executeUpdate();
+        session.createNativeQuery("COPY teacher TO 'C:\\Users\\kosiyyu\\Desktop\\teacher.csv' DELIMITER ',' CSV HEADER").executeUpdate();
+        session.getTransaction().commit();
+        session.close();
+
+        //add junction tables ;))
+    }
+
     public static void cast(Object o) throws IllegalArgumentException, IllegalAccessException{
         Class<? extends Object> clazz = o.getClass();
         //clazz.cast(o);
@@ -57,10 +69,12 @@ public class Main {
 
         Teacher teacher1 = new Teacher("Walter", "White", new Timestamp(new Date(2001, Calendar.JANUARY,23).getTime()),"Warszawska 17c", "alannokaw@gmail.com", "+48833948736");
         Teacher teacher2 = new Teacher("Alan", "Nowak", new Timestamp(new Date(2001, Calendar.JANUARY,23).getTime()),"Warszawska 17c", "alannokaw@gmail.com", "+48833948736");
+        Teacher teacher3 = new Teacher("Jo", "Mama", new Timestamp(new Date(2001, Calendar.JANUARY,23).getTime()),"Warszawska 17c", "alannokaw@gmail.com", "+48833948736");
         Teacher teacherTest = new Teacher("Alan", "Nowak", new Timestamp(new Date(2001, Calendar.JANUARY,23).getTime()),"Warszawska 17c", "alannokaw@gmail.com", "+48833948736");
 
         teacherDAO.save(teacher1);
         teacherDAO.save(teacher2);
+        teacherDAO.save(teacher3);
         teacherDAO.save(teacherTest);
 
         teacherDAO.delete(teacherDAO.get(3l));
@@ -101,6 +115,11 @@ public class Main {
         ClassGroup classGroup2 = new ClassGroup(teacher2, 5l, studentList2);
         classGroupDAO.save(classGroup2);
 
+/*        List<Student> studentList3 = new ArrayList<>();
+        ClassGroup classGroup3 = new ClassGroup(teacher3, 5l, studentList3);
+        classGroupDAO.save(classGroup3);*/
+
+        ///////
         classGroupDAO.searchInSpecificClassGroup(1l, "B").forEach(System.out::println);
         System.out.println("----------------------------------------");
         classGroupDAO.getStudentsFromClassGroupByLastname(1l).forEach(System.out::println);
@@ -109,7 +128,14 @@ public class Main {
         System.out.println("----------------------------------------");
         classGroupDAO.getStudentsFromClassGroupById(1l).forEach(System.out::println);
         System.out.println("----------------------------------------");
+        System.out.println(classGroupDAO.getAll());
+        System.out.println(classGroupDAO.get(1l));
 
+
+        System.out.println(studentDAO.getAll());
+        System.out.println(studentDAO.get(1l));
+
+        //export();
 
 
 
