@@ -2,20 +2,11 @@ package org.example.dao;
 
 import org.example.model.ClassGroup;
 import org.example.model.Student;
-import org.hibernate.Hibernate;
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.postgresql.core.NativeQuery;
-
-import javax.management.Query;
 import javax.persistence.EntityManager;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 public class ClassGroupDAO implements DAO<ClassGroup> {
 

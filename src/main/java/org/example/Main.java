@@ -1,8 +1,6 @@
 package org.example;
 
-import org.example.dao.ClassGroupDAO;
-import org.example.dao.StudentDAO;
-import org.example.dao.TeacherDAO;
+import org.example.dao.*;
 import org.example.model.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -19,23 +17,29 @@ public class Main {
     public static final SessionFactory sessionFactory;
     public static StudentDAO studentDAO;
     public static TeacherDAO teacherDAO;
+    public static ClassesDAO classesDAO;
     public static ClassGroupDAO classGroupDAO;
+
+    public static SubjectDAO subjectDAO;
     static {
         try {
             Configuration configuration = new Configuration();
             configuration.configure("hibernate.cfg.xml");
-            configuration.addAnnotatedClass(Class.class);
+            configuration.addAnnotatedClass(Student.class);
+            configuration.addAnnotatedClass(Teacher.class);
+            configuration.addAnnotatedClass(Subject.class);
+            configuration.addAnnotatedClass(Classes.class);
             configuration.addAnnotatedClass(ClassGroup.class);
             configuration.addAnnotatedClass(Grade.class);
             configuration.addAnnotatedClass(Rating.class);
-            configuration.addAnnotatedClass(Student.class);
-            configuration.addAnnotatedClass(Subject.class);
-            configuration.addAnnotatedClass(Teacher.class);
             sessionFactory = configuration.buildSessionFactory();
 
             studentDAO = new StudentDAO(sessionFactory);
             teacherDAO = new TeacherDAO(sessionFactory);
             classGroupDAO = new ClassGroupDAO(sessionFactory);
+            subjectDAO = new SubjectDAO(sessionFactory);
+            classesDAO = new ClassesDAO(sessionFactory);
+
         }
         catch (Exception e){
             System.out.println(e);
@@ -129,11 +133,30 @@ public class Main {
         classGroupDAO.getStudentsFromClassGroupById(1l).forEach(System.out::println);
         System.out.println("----------------------------------------");
         System.out.println(classGroupDAO.getAll());
+        System.out.println("----------------------------------------");
         System.out.println(classGroupDAO.get(1l));
-
-
+        System.out.println("----------------------------------------");
         System.out.println(studentDAO.getAll());
+        System.out.println("----------------------------------------");
         System.out.println(studentDAO.get(1l));
+        System.out.println("----------------------------------------");
+
+        Subject subject1 = new Subject("Math");
+        subjectDAO.save(subject1);
+
+        Classes classes1 = new Classes(subject1, teacher1,classGroup1, new Timestamp(new Date(2001, Calendar.JANUARY, 23).getTime()) ,45 );
+        classesDAO.save(classes1);
+
+
+        System.out.println(subjectDAO.getAll());
+        System.out.println("----------------------------------------");
+        System.out.println(subjectDAO.get(1l));
+        System.out.println("----------------------------------------");
+        System.out.println(classesDAO.getAll());
+        System.out.println("----------------------------------------");
+        System.out.println(classesDAO.get(1l));
+        System.out.println("----------------------------------------");
+
 
         //export();
 

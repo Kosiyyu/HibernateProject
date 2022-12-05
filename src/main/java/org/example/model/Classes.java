@@ -11,16 +11,16 @@ import java.sql.Timestamp;
 public class Classes {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "class_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "classes_seq")
     private Long id;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private Subject subject;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private Teacher teacher;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private ClassGroup classGroup;
 
     @NotNull
