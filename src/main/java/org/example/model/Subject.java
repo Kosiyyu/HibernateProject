@@ -14,10 +14,10 @@ public class Subject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "subject_seq")
-    int id;
+    private Long id;
 
     @NotBlank
-    String name;
+    private String name;
 
     public Subject() {
     }
@@ -26,7 +26,7 @@ public class Subject {
         this.name = name;
     }
 
-    public Subject(int id, String name) {
+    public Subject(Long id, String name) {
         this.id = id;
         this.name = name;
     }

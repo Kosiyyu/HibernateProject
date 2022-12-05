@@ -45,4 +45,11 @@ public class ClassGroup {
         this.size = size;
         this.students = students;
     }
+
+    public ClassGroup(Long id, Teacher teacher, Long size, List<Student> students) {
+        this.id = id;
+        this.teacher = teacher;
+        this.size = size;
+        this.students = students;
+    }
 }

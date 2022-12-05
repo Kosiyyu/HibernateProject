@@ -3,14 +3,12 @@ package org.example;
 import org.example.dao.ClassGroupDAO;
 import org.example.dao.StudentDAO;
 import org.example.dao.TeacherDAO;
-import org.example.model.ClassGroup;
-import org.example.model.Student;
-import org.example.model.Subject;
-import org.example.model.Teacher;
+import org.example.model.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import java.lang.Class;
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.util.*;
@@ -26,11 +24,13 @@ public class Main {
         try {
             Configuration configuration = new Configuration();
             configuration.configure("hibernate.cfg.xml");
-            configuration.addAnnotatedClass(Student.class);
-            configuration.addAnnotatedClass(ClassGroup.class);
-            configuration.addAnnotatedClass(Teacher.class);
-            configuration.addAnnotatedClass(Subject.class);
             configuration.addAnnotatedClass(Class.class);
+            configuration.addAnnotatedClass(ClassGroup.class);
+            configuration.addAnnotatedClass(Grade.class);
+            configuration.addAnnotatedClass(Rating.class);
+            configuration.addAnnotatedClass(Student.class);
+            configuration.addAnnotatedClass(Subject.class);
+            configuration.addAnnotatedClass(Teacher.class);
             sessionFactory = configuration.buildSessionFactory();
 
             studentDAO = new StudentDAO(sessionFactory);
